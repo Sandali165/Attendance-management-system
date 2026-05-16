@@ -1,0 +1,11 @@
+# .gitignore
+
+Create a file named `.gitignore` in the root folder and add the following:
+
+```gitignore
+target/
+.idea/
+*.log
+.DS_Store
+```
+
