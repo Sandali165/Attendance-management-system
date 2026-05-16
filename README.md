@@ -157,6 +157,3 @@ This project can be extended further with more real-world DevOps and backend fea
 Sandali165
 
 ---
-
-.DS_Store
-```
