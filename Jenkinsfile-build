@@ -1,52 +1,69 @@
 pipeline {
-
     agent any
+
+    environment {
+        AWS_REGION = 'eu-north-1'
+        ECR_REPO = '491979259412.dkr.ecr.eu-north-1.amazonaws.com/attendance-app'
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
 
     stages {
 
         stage('Clone Repository') {
-
             steps {
-
-                git branch: 'main',
-                url: 'https://github.com/Sandali165/Attendance-management-system.git'
-            }
-        }
-
-        stage('Run Tests') {
-
-            steps {
-
-                bat 'mvn test'
+                git 'https://github.com/Sandali165/Attendance-management-system.git'
             }
         }
 
         stage('Build Maven Project') {
-
             steps {
-
                 bat 'mvn clean package'
             }
         }
 
-        stage('Build Docker Image') {
-
+        stage('Run Tests') {
             steps {
+                bat 'mvn test'
+            }
+        }
 
-                bat 'docker build -t attendance-app:%BUILD_NUMBER% .'
+        stage('Build Docker Image') {
+            steps {
+                bat "docker build -t attendance-app:%IMAGE_TAG% ."
+            }
+        }
+
+        stage('Login to AWS ECR') {
+            steps {
+                bat '''
+                aws ecr get-login-password --region %AWS_REGION% | docker login --username AWS --password-stdin 491979259412.dkr.ecr.eu-north-1.amazonaws.com
+                '''
+            }
+        }
+
+        stage('Tag Docker Image') {
+            steps {
+                bat '''
+                docker tag attendance-app:%IMAGE_TAG% %ECR_REPO%:%IMAGE_TAG%
+                '''
+            }
+        }
+
+        stage('Push Docker Image to ECR') {
+            steps {
+                bat '''
+                docker push %ECR_REPO%:%IMAGE_TAG%
+                '''
             }
         }
     }
 
     post {
-
         success {
-
             echo 'Pipeline executed successfully!'
         }
 
         failure {
-
             echo 'Pipeline failed!'
         }
     }
