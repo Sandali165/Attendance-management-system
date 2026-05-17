@@ -140,15 +140,9 @@ attendance-management-system/
 
 ---
 
-# Future Improvements
+# Webhook Test
 
-This project can be extended further with more real-world DevOps and backend features suc
-
-* AWS EC2 Deployment
-* AWS ECR Integration
-* Load Balancer Setup
-* Database Integration
-* Authentication System
+Testing automatic Jenkins build trigger using GitHub webhook.
 
 ---
 
