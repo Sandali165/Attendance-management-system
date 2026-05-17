@@ -58,20 +58,19 @@ pipeline {
             }
         }
     
-
     stage('Deploy to EC2') {
     steps {
         bat '''
-        ssh -i C:\\Users\\Sandali\\Downloads\\attendance-key.pem ubuntu@43.205.199.46 "
-        aws ecr get-login-password --region eu-north-1 | sudo docker login --username AWS --password-stdin 491979259412.dkr.ecr.eu-north-1.amazonaws.com &&
-        sudo docker pull 491979259412.dkr.ecr.eu-north-1.amazonaws.com/attendance-app:%IMAGE_TAG% &&
-        sudo docker stop attendance-container || true &&
-        sudo docker rm attendance-container || true &&
-        sudo docker run -d -p 8080:8080 --name attendance-container 491979259412.dkr.ecr.eu-north-1.amazonaws.com/attendance-app:%IMAGE_TAG%
-        "
+        ssh -o StrictHostKeyChecking=no -i C:\\Users\\Sandali\\Downloads\\attendance-key.pem ubuntu@43.205.199.46 ^
+        "aws ecr get-login-password --region eu-north-1 | sudo docker login --username AWS --password-stdin 491979259412.dkr.ecr.eu-north-1.amazonaws.com && ^
+        sudo docker pull 491979259412.dkr.ecr.eu-north-1.amazonaws.com/attendance-app:%BUILD_NUMBER% && ^
+        sudo docker stop attendance-container || true && ^
+        sudo docker rm attendance-container || true && ^
+        sudo docker run -d -p 8080:8080 --name attendance-container 491979259412.dkr.ecr.eu-north-1.amazonaws.com/attendance-app:%BUILD_NUMBER%"
         '''
             }
         }
+
     }
     post {
         success {
